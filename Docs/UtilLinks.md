@@ -11,6 +11,7 @@
 - [Infura docs](https://docs.infura.io/infura/).
 - [Textile docs](https://docs.textile.io/) (Open source tools to decentralitzed databases, IPFS-based storage, content hosting over Libp2p IPFS and Filecoin).
 - [Estuary docs](https://docs.estuary.tech/what-is-estuary) (Open source software that allows easy sending of public data to the Filecoin network ).
+- [understanding ipfs in depth](https://hackernoon.com/understanding-ipfs-in-depth-1-5-a-beginner-to-advanced-guide-e937675a8c8a)
 ### Tools
 - [Textile github](https://github.com/textileio).
 - [ChainSafe forest](https://github.com/ChainSafe/forest) (Filecoin node implementation in rust).
