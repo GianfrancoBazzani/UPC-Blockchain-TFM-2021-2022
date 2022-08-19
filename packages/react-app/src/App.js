@@ -2,6 +2,7 @@ import React from "react";
 import logo from "./logos/triangulo.jpg";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Wallet from "./components/Wallet";
+import Home from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import Profile from "./pages/Profile";
 import "./App.css";
@@ -29,7 +30,7 @@ function App() {
           >
             <tr>
               <td align="left">
-                <a href="index.html" target="_parent">
+                <a href="/" target="_parent">
                   <img src={logo} width="40" height="34" />
                 </a>
               </td>
@@ -38,7 +39,7 @@ function App() {
               <td> </td>
               <td> </td>
               <td align="right">
-                <Link to="/landingpages"><h2>Landing Pages</h2></Link>
+                <Link to="/landingpage"><h2>Landing Pages</h2></Link>
               </td>
               <td align="left">
                 <Link to="/profile"><h2>Profile</h2></Link>
@@ -60,9 +61,10 @@ function App() {
         {/* 👇️ FINAL DE LA TAULA */}
 
         {/* 👇️ Wrap your Route components in a Routes component */}
-        <Routes>
+        <Routes> 
           {/* <Route path="/" element={<Menu />} /> */}
-          <Route path="/landingpages" element={<LandingPage />} />
+          <Route path="/" exact element={<Home />} />
+          <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
