@@ -1,0 +1,16 @@
+p {
+    font-size: calc(10px + 2vmin);
+    color: rgb(23, 26, 204);
+  }
+  
+  h2 {
+    color:white;
+  }
+
+ Document{
+
+  font-size: calc(12px + 2vmin);
+  color: rgb(23, 26, 204);
+ } 
+  
+  
