@@ -15,6 +15,8 @@ contract ControlAccess {
         Status status;
         address userAdress;
         uint256[] registers;
+        bytes32 autentificator;
+        bytes32 newAutentificatorRequest;
     }
 
     mapping(uint256 => uint256) public userID;
@@ -24,6 +26,8 @@ contract ControlAccess {
     address public ownerAddress;
     address public managerAddress;
     bool onchainTime;
+
+    event AutentificatorChangeRequest(uint256 indexed userKey_);
 
     modifier onlyOwner() {
         require(msg.sender == ownerAddress, "You're not the owner");
@@ -71,6 +75,30 @@ contract ControlAccess {
         UserData storage tmpUser = user[nUsers - 1];
         tmpUser.status = Status.ACTIVATED;
         tmpUser.userAdress = userAdress_;
+    }
+
+    function setAutentificator(uint256 userKey_, bytes32 newAutentificator_)
+        public
+        onlyActivated(userKey_)
+    {
+        emit AutentificatorChangeRequest(userKey_);
+        UserData storage tmpUser = user[userID[userKey_] - 1];
+        require(msg.sender == tmpUser.userAdress, "You are not the user");
+        tmpUser.autentificator = newAutentificator_;
+    }
+
+    function setUserAutentificator(uint256 userKey_)
+        public
+        onlyOwner
+        onlyActivated(userKey_)
+    {
+        UserData storage tmpUser = user[userID[userKey_] - 1];
+        require(
+            tmpUser.newAutentificatorRequest != 0,
+            "There is no autentificator change request"
+        );
+        tmpUser.autentificator = tmpUser.newAutentificatorRequest;
+        tmpUser.newAutentificatorRequest = 0;
     }
 
     function removeUser(uint256 userKey_)
@@ -216,4 +244,16 @@ contract ControlAccess {
         }
         return isin;
     }
+
+    function occupancy(uint256 timestamp_) public view returns (uint256) {
+        uint256 nn = 0;
+        for (uint256 i = 0; i < nUsers; ++i) {
+            if (isInsideID(i, timestamp_)) {
+                nn += 1;
+            }
+        }
+        return nn;
+    }
+
+    // Funcion to clean registers?
 }
