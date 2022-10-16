@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 /* TO DO LIST;
     - More flexible with problems with enter and exit
 */
-contract ControlAccess {
+contract AccessControl {
     enum Status {
         ACTIVATED,
         BLOCKED,
