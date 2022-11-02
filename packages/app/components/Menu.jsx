@@ -1,13 +1,19 @@
 import React from "react";
-import { scryRenderedDOMComponentsWithTag } from "react-dom/test-utils";
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import Link from "next/link";
+import Wallet from "../components/Wallet";
+//import logo from "../public/triangulo.jpg";
+//import { scryRenderedDOMComponentsWithTag } from "react-dom/test-utils";
 //import language from "../js/lang.json"; //language es un objecte que apunta al fitxer idioma.json
-import idioma2 from "../js/lang2.json"; //language es un objecte que apunta al fitxer idioma.json
-import logo from "../logos/triangulo.jpg";
+//import idioma2 from "../js/lang2.json"; //language es un objecte que apunta al fitxer idioma.json
+
 //variables globales https://www.youtube.com/watch?v=HlY2jF74s_c
 //let idioma = 0;
 
-let idioma = parseInt(localStorage.getItem("idioma"));
-let idioma_etiquetas = idioma2[idioma];
+//let idioma = parseInt(localStorage.getItem("idioma"));
+//let idioma_etiquetas = idioma2[idioma];
 
 // import Boton from "./Boton";
 const Menu = () => {
@@ -19,27 +25,39 @@ const Menu = () => {
 
   return (
     <div style={divStylesMenu}>
-      <table
-        width="100%"
-        // style={divStylesMenu}
-        // align="left"
-        // cellspacing="10"
-        // cellpadding="10"
-        border="0"
-      >
-        <tr>
-          <td align="center">
-            <a href="index.html" target="_parent">
-              <img src={logo} width="40" height="34" />
-            </a>
-          </td>
-          <td align="center">{idioma_etiquetas.menu1}</td>
-          <td align="center">{idioma_etiquetas.menu2}</td>
-          <td align="center">{idioma_etiquetas.menu3}</td>
-          <td align="center">{idioma_etiquetas.menu4}</td>
-          <td align="right"></td>
-        </tr>
-      </table>
+      <div>
+        <table
+          width="100%"
+          style={divStylesMenu}
+          align="left"
+          //cellspacing="10"
+          //cellpadding="2"
+          border="0"
+        >
+          <tr>
+            <td align="left">
+              <Link href="">
+                <a>Home</a>
+              </Link>
+            </td>
+            <td>
+              <Link href="balance">
+                <a>Balance </a>
+              </Link>
+            </td>
+            <td>
+              <Link href="transactions2">
+                <a>Transactions</a>
+              </Link>
+            </td>
+
+            <td align="right">
+              {" "}
+              <Wallet />{" "}
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   );
 };

@@ -3,14 +3,12 @@ import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 import Menu from '../components/Menu'
 
-const Contacto = () => (
+const Wallet = () => (
     <div>
-
-
-<Menu />
-<t1> Contact</t1>
+        <Menu />
+        <t1> Connect to Wallet</t1>
     </div>
 
 )
 
-export default Contacto
+export default Wallet
