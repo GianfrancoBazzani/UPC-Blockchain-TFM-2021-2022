@@ -1,11 +1,13 @@
+import React, { useState, useEffect, Fragment } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-//import React, {Component} from 'react'
-import React from 'react'
+import Menu from './Menu'
+//import { createRoot } from 'react-dom/client';
+//import Sample from './Sample';
 //import Link from 'next/link'
-import Menu from '../components/Menu'
-//import Footer from '../components/Footer'
+//import Transactions from "./Transactions";
+//import Transactions from "./Transactions";
 //import Wallet from "../components/Wallet";
 
 const divStylesMenuI = {
@@ -15,13 +17,13 @@ const divStylesMenuI = {
 };
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Project</title>
-        <meta name="" />
+        <meta name="" /> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <Menu />  
+        <Menu />
     </div>
   )
 }

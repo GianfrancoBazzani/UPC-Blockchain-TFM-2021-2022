@@ -114,7 +114,8 @@
     flex-direction: column;
   }
 }
-
+padding-right: 0px;
+  
 @media (prefers-color-scheme: dark) {
   .card,
   .footer {
@@ -127,3 +128,25 @@
     filter: invert(1);
   }
 }
+
+
+
+.ul{
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  margin: 0px;
+}
+
+.li{
+  background-color: aqua;
+  list-style-type: none;
+  display: inline;
+  padding-right: 5px;
+}
+
+
+
+
+
