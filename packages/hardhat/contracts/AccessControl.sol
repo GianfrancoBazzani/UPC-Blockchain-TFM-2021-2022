@@ -6,9 +6,13 @@ import "./FareCalculator.sol";
 import "./AccessControlToken.sol";
 
 /* TO DO LIST;
-    - pagar deute   
+    - checkejar manualment occupancy
+    - posar camps privat
+    - getCurrentFare y getFare()
+    - checkejar que la interface es d'un cert tipus
     - batched versions com future qork
-    - Tema de la privadesa 
+    - posar camps privats privats
+    - comentaris
 */
 contract AccessControl is Ownable {
     event UserBlocked(address indexed userAddress_, uint256 indexed debt);
@@ -303,6 +307,8 @@ contract AccessControl is Ownable {
             userID_ >= 0 && userID_ < nUsers,
             "Out of range access to user"
         );
+        require(start_ < end_, "This is not an interval");
+        uint256 interval = end_ - start_;
         uint256 sum = 0;
         UserData storage tmpUser = user[userID_];
         uint256 nRegisters = tmpUser.registers.length;
@@ -313,7 +319,11 @@ contract AccessControl is Ownable {
             if (start_ > maxA) {
                 maxA = start_;
             }
-            minB = tmpUser.registers[i + 1];
+            if (i + 1 < tmpUser.registers.length) {
+                minB = tmpUser.registers[i + 1];
+            } else {
+                minB = block.timestamp;
+            }
             if (end_ < minB) {
                 minB = end_;
             }
@@ -321,7 +331,7 @@ contract AccessControl is Ownable {
                 sum += minB - maxA;
             }
         }
-        return sum;
+        return (sum + (interval) / 2) / interval;
     }
 
     function _isInsideID(uint256 userID_, uint256 timestamp_)
@@ -337,11 +347,14 @@ contract AccessControl is Ownable {
         UserData storage tmpUser = user[userID_];
         uint256 nRegisters = tmpUser.registers.length;
         for (uint256 i = 0; i < nRegisters; i += 2) {
-            if (
-                timestamp_ >= tmpUser.registers[i] &&
-                timestamp_ <= tmpUser.registers[i + 1]
-            ) {
+            if (timestamp_ >= tmpUser.registers[i]) {
                 isin = true;
+                if (
+                    i + 1 < tmpUser.registers.length &&
+                    timestamp_ > tmpUser.registers[i + 1]
+                ) {
+                    isin = false;
+                }
             }
         }
         return isin;
