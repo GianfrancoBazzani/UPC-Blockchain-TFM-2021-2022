@@ -6,15 +6,14 @@ import "./FareCalculator.sol";
 import "./AccessControlToken.sol";
 
 /* TO DO LIST;
-    - crida a ERC20
     - pagar deute   
     - batched versions com future qork
-    - tot el tema de la privadesa ens ho passem pel forro de moment
+    - Tema de la privadesa 
 */
 contract AccessControl is Ownable {
-    event userBlocked(address indexed userAddress_, uint256 indexed debt);
-    event newFare(address indexed fareAddress_);
-    event debtPayed(address indexed userAdrdress_);
+    event UserBlocked(address indexed userAddress_, uint256 indexed debt);
+    event NewFare(address indexed fareAddress_);
+    event DebtPayed(address indexed userAdrdress_);
 
     enum Status {
         BLOCKED,
@@ -136,7 +135,7 @@ contract AccessControl is Ownable {
         onlyActivated(userAdrdress_)
     {
         user[userID[userAdrdress_] - 1].status = Status.BLOCKED;
-        emit userBlocked(userAdrdress_, 0);
+        emit UserBlocked(userAdrdress_, 0);
     }
 
     function unblockUser(address userAdrdress_)
@@ -153,7 +152,7 @@ contract AccessControl is Ownable {
         //rick: aqui em falta comprobar que implementa la interface
         fareTimeStamp.push(block.timestamp);
         fare.push(FareCalculator(fareAddress_));
-        emit newFare(fareAddress_);
+        emit NewFare(fareAddress_);
     }
 
     /**
@@ -210,7 +209,7 @@ contract AccessControl is Ownable {
         bool sent = token.transferFrom(msg.sender, address(this), debt);
         require(sent, "Failed to pay debt");
         user[userID[msg.sender] - 1].debt = 0;
-        emit debtPayed(msg.sender);
+        emit DebtPayed(msg.sender);
     }
 
     /**
@@ -353,7 +352,7 @@ contract AccessControl is Ownable {
         uint256 start_,
         uint256 stop_,
         uint256 occupancy_
-    ) public {
+    ) internal {
         uint256 nFares = fare.length;
         uint256 cost = 0;
         for (uint256 i = 0; i < nFares; i++) {
@@ -375,7 +374,7 @@ contract AccessControl is Ownable {
             tmpUser.status = Status.BLOCKED;
             uint256 allowance = token.allowance(msg.sender, address(this));
             if (allowance < cost) {
-                emit userBlocked(userAddress_, cost - allowance);
+                emit UserBlocked(userAddress_, cost - allowance);
                 cost = allowance;
             }
             if (cost > 0) {
