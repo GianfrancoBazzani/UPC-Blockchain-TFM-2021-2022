@@ -1,8 +1,10 @@
 import React from "react";
 import "@rainbow-me/rainbowkit/styles.css";
-//import "./Wallet.css";
-//import styles from "../styles/Wallet.css";
+
+import merge from 'lodash.merge';
 import {
+  lightTheme,
+  darkTheme,
   getDefaultWallets,
   RainbowKitProvider,
   ConnectButton,
@@ -10,6 +12,12 @@ import {
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+
+const myTheme = merge(lightTheme(), {
+  colors: {
+    accentColor: '#7f7f7f',
+  },
+})
 
 const Wallet = () => {
   const { chains, provider } = configureChains(
@@ -39,7 +47,7 @@ const Wallet = () => {
 
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+      <RainbowKitProvider theme={myTheme} chains={chains}>
         <ConnectButton />
       </RainbowKitProvider>
     </WagmiConfig>

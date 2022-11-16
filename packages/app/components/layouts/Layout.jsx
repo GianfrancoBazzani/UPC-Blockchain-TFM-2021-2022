@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
+import Wallet from "../Wallet";
 
 const Header = styled.div`
   display: flex;
@@ -49,6 +50,9 @@ const Layout = () => {
           <Text>Allowance</Text>
         </Link>
       </Container>
+      <div style={{display: 'flex', marginLeft: 'auto'}}>
+      <Wallet></Wallet>
+      </div>
     </Header>
   );
 };
