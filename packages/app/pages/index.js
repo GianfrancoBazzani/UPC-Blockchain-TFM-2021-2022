@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Menu from './Menu'
+import Layout from "../components/layouts/Layout";
 //import { createRoot } from 'react-dom/client';
 //import Sample from './Sample';
 //import Link from 'next/link'
@@ -23,7 +24,7 @@ export default function Home() {
         <meta name="" /> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <Menu />
+        <Layout></Layout>
     </div>
   )
 }
