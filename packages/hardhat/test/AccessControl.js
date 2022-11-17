@@ -188,6 +188,12 @@ describe("AccessControl", function () {
       await expect(accessControl.connect(hardwareAddress)["enter(address)"](owner.address)).to.be.revertedWith(
         "This user is not registered");
     });
+    it("Should revert if an added user is added again", async function () {
+      const { accessControl, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
+      await accessControl.addUser(owner.address);
+      await expect(accessControl.addUser(owner.address)).to.be.revertedWith(
+        "User already added");
+    });
 
   });
   describe("Occupancy", function () {
@@ -287,6 +293,44 @@ describe("AccessControl", function () {
       const Fare2 = await hre.ethers.getContractFactory("Fare2");
       const fare2 = await Fare2.deploy();
       expect(await fare2.evaluate(1, 65, 300, fare2.address, fare2.address)).to.equal(138);
+
+    });
+  });
+  describe("Tokens Vendor", function () {
+    it("Should let user1 to by tokens", async function () {
+      const [owner, user1] = await ethers.getSigners();
+      const AccessControlToken = await hre.ethers.getContractFactory("AccessControlToken");
+      const TokensVendor = await ethers.getContractFactory("TokensVendor");
+      const token = await AccessControlToken.deploy("AccessControlToken", "ACT", 10000);
+      const vendor = await TokensVendor.deploy(token.address);
+      await token.approve(vendor.address, 5000);
+      await vendor.connect(user1).buyTokens({ value: 1 });
+      expect(await token.balanceOf(user1.address)).to.equal(10);
+    });
+    it("Should revert if not enought funds", async function () {
+      const [owner, user1] = await ethers.getSigners();
+      const AccessControlToken = await hre.ethers.getContractFactory("AccessControlToken");
+      const TokensVendor = await ethers.getContractFactory("TokensVendor");
+      const token = await AccessControlToken.deploy("AccessControlToken", "ACT", 10000);
+      const vendor = await TokensVendor.deploy(token.address);
+      await token.approve(vendor.address, 5000);
+      await expect(vendor.connect(user1).buyTokens({ value: 1000000000 })).to.be.revertedWith(
+        "The vendor has not enought tokens");
+    });
+    it("Should let the owner to by tokens", async function () {
+      const [owner, user1] = await ethers.getSigners();
+      const AccessControlToken = await hre.ethers.getContractFactory("AccessControlToken");
+      const TokensVendor = await ethers.getContractFactory("TokensVendor");
+      const token = await AccessControlToken.deploy("AccessControlToken", "ACT", 10000);
+      const vendor = await TokensVendor.deploy(token.address);
+      await token.approve(vendor.address, 5000);
+      await vendor.connect(user1).buyTokens({ value: 1 });
+      balanceOwnerBefore = await ethers.provider.getBalance(vendor.address);
+      balanceContract = await ethers.provider.getBalance(owner.address);
+      await vendor.withdraw();
+      balanceOwnerAfter = await ethers.provider.getBalance(owner.address);
+      expect(balanceOwnerAfter).to.be.greaterThan(balanceOwnerBefore);
+      expect(balanceOwnerBefore.add(balanceContract)).to.be.greaterThan(balanceOwnerAfter);
 
     });
   });

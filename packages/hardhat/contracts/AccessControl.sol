@@ -10,6 +10,7 @@ import "./AccessControlToken.sol";
     - getCurrentFare y getFare()
     - checkejar que la interface es d'un cert tipus
     - batched versions com future qork
+    - posar camps privats privats
     - comentaris
 */
 contract AccessControl is Ownable {
