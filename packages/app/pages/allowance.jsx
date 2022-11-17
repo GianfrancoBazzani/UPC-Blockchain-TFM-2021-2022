@@ -9,7 +9,7 @@ import Layout from '../components/layouts/Layout';
 const Allowance = () => {
     return (
         <>
-        <Layout/>
+        <Layout page={'allowance'}/>
         <h1>Allowance</h1>
         </>
     )

@@ -9,7 +9,7 @@ import Layout from '../components/layouts/Layout';
 const Registers = () => {
     return (
         <>
-        <Layout/>
+        <Layout page={'registers'}/>
         <h1>Registers</h1>
         </>
     )

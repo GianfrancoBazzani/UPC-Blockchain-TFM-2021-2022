@@ -73,7 +73,7 @@ const Debts = () => {
 
   return (
     <>
-      <Layout />
+      <Layout page={'debts'}/>
       <MainContainer style={{ marginTop: "5rem" }} maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
           <Text>Debts</Text>

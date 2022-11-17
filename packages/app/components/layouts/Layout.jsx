@@ -29,7 +29,7 @@ const Container = styled.div`
   }
 `;
 
-const Layout = () => {
+const Layout = ({page}) => {
   return (
     <Header>
       <Link href="/">
@@ -37,17 +37,17 @@ const Layout = () => {
       </Link>
       <Container>
         <Link href="/registers">
-          <Text>Registers</Text>
+          <Text style={{fontWeight: page === 'registers' ? 'bold' : 'none'}}>Registers</Text>
         </Link>
       </Container>
       <Container>
         <Link href="/debts">
-          <Text>Debts</Text>
+          <Text style={{fontWeight: page === 'debts' ? 'bold' : 'none'}}>Debts</Text>
         </Link>
       </Container>
       <Container>
         <Link href="/allowance">
-          <Text>Allowance</Text>
+          <Text style={{fontWeight: page === 'allowance' ? 'bold' : 'none'}}>Allowance</Text>
         </Link>
       </Container>
       <div style={{display: 'flex', marginLeft: 'auto'}}>
