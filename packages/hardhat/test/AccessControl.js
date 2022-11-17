@@ -76,12 +76,13 @@ describe("AccessControl", function () {
     it("Should increase/decrease occupancy when users enter/exit (offchain version) ", async function () {
       const { accessControl, owner, hardwareAddress, user1, user2 } = await loadFixture(deployOffchainFixture);
       await accessControl.addUser(owner.address);
-      await accessControl.connect(hardwareAddress)["enter(address,uint256)"](owner.address, 0);
+      await accessControl.connect(hardwareAddress)["enter(address,uint256)"](owner.address, 2);
       await accessControl.addUser(user1.address);
-      await accessControl.connect(hardwareAddress)["enter(address,uint256)"](user1.address, 0);
+      await accessControl.connect(hardwareAddress)["enter(address,uint256)"](user1.address, 2);
       await accessControl.addUser(user2.address);
-      await accessControl.connect(hardwareAddress)["register(address,uint256)"](user2.address, 0);
-      expect(await accessControl["occupancy(uint256)"](1)).to.equal(3);
+      await accessControl.connect(hardwareAddress)["register(address,uint256)"](user2.address, 2);
+      expect(await accessControl["occupancy(uint256)"](3)).to.equal(3);
+      expect(await accessControl["occupancy(uint256,uint256)"](0, 4)).to.equal(3);
       expect(await accessControl["isInside(address,uint256)"](owner.address, 3)).to.equal(true);
       await time.increase(2);
       await accessControl.connect(hardwareAddress)["exit(address,uint256)"](owner.address, 10);
@@ -89,6 +90,11 @@ describe("AccessControl", function () {
       await accessControl.connect(hardwareAddress)["register(address,uint256)"](user2.address, 10);
       await time.increase(2);
       expect(await accessControl["occupancy(uint256)"](11)).to.equal(0);
+      expect(await accessControl["occupancy(uint256,uint256)"](11, 12)).to.equal(0);
+      expect(await accessControl["occupancy(uint256,uint256)"](1, 2)).to.equal(0);
+      expect(await accessControl["occupancy(uint256,uint256)"](5, 12)).to.equal(3);
+      expect(await accessControl["occupancy(uint256,uint256)"](1, 5)).to.equal(3);
+      expect(await accessControl["isInside(address,uint256)"](owner.address, 12)).to.equal(false);
       const listRegister = await accessControl.getUserRegisters(user1.address)
       expect(listRegister.length).to.be.equal(2)
     });
@@ -160,6 +166,18 @@ describe("AccessControl", function () {
       await expect(accessControl.unblockUser(owner.address)).to.be.revertedWith(
         "The user is not blocked");
     });
+    it("Should revert if a non-hardware address calls the function enter", async function () {
+      const { accessControl, owner } = await loadFixture(deployOnchainFixture);
+      await accessControl.addUser(owner.address);
+      await expect(accessControl["enter(address)"](owner.address)).to.be.revertedWith(
+        "You're not the hardware");
+    });
+    it("Should revert if a non-registered user enters", async function () {
+      const { accessControl, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
+      await expect(accessControl.connect(hardwareAddress)["enter(address)"](owner.address)).to.be.revertedWith(
+        "This user is not registered");
+    });
+
   });
   describe("Occupancy", function () {
 
@@ -182,6 +200,22 @@ describe("AccessControl", function () {
         .to.emit(accessControl, "UserBlocked")
         .withArgs(user1.address, 40);
       expect(await accessControl.connect(user1).myDebt()).to.equal(40);
+    });
+    it("Should generate a debt when the cost cannot be complitely payed", async function () {
+      const { accessControl, fare1, token, user1, hardwareAddress } = await loadFixture(deployOnchainFixture);
+      accessControl.addFare(fare1.address);
+      await accessControl.addUser(user1.address);
+      await token.transfer(user1.address, 10);
+      await token.connect(user1).approve(accessControl.address, 10);
+      await accessControl.connect(hardwareAddress)["enter(address)"](user1.address);
+      await time.increase(3);
+      await expect(accessControl.connect(hardwareAddress)["exit(address)"](user1.address))
+        .to.emit(accessControl, "UserBlocked")
+        .withArgs(user1.address, 30);
+      expect(await accessControl.connect(user1).myDebt()).to.equal(30);
+      await expect(accessControl.blockUser(user1.address)).to.be.revertedWith(
+        "This user is not activated");
+
     });
     it("Should pay a on exit if there is enough allowance", async function () {
       const { accessControl, fare1, token, user1, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
@@ -210,7 +244,9 @@ describe("AccessControl", function () {
       expect(await accessControl.connect(user1).myDebt()).to.equal(40);
       await token.connect(user1).approve(accessControl.address, 1000);
       expect(await token.connect(user1).allowance(user1.address, accessControl.address)).to.equal(1000);
-      await accessControl.connect(user1).payDebt(await accessControl.connect(user1).myDebt() + 1);
+      await accessControl.connect(user1).payDebt(0);
+      expect(await accessControl.connect(user1).myDebt()).to.equal(40);
+      await accessControl.connect(user1).payDebt(50);
       expect(await accessControl.connect(user1).myDebt()).to.equal(0);
 
     });

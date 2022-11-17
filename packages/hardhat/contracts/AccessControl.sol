@@ -156,47 +156,56 @@ contract AccessControl is Ownable {
     /**
      * accesses registry
      */
-    function enter(address userAdress_)
+    function enter(address userAddress_)
         public
+        onlyRegistered(userAddress_)
         onlyOnchainTime
-        onlyOutside(userAdress_)
+        onlyOutside(userAddress_)
     {
-        _register(userAdress_, block.timestamp);
+        _register(userAddress_, block.timestamp);
     }
 
     function exit(address userAddress_)
         public
+        onlyRegistered(userAddress_)
         onlyOnchainTime
         onlyInside(userAddress_)
     {
         _register(userAddress_, block.timestamp);
     }
 
-    function register(address userAdress_) public onlyOnchainTime {
-        _register(userAdress_, block.timestamp);
+    function register(address userAddress_)
+        public
+        onlyRegistered(userAddress_)
+        onlyOnchainTime
+    {
+        _register(userAddress_, block.timestamp);
     }
 
-    function enter(address userAdress_, uint256 timestamp_)
+    function enter(address userAddress_, uint256 timestamp_)
         public
+        onlyRegistered(userAddress_)
         onlyOffchainTime
-        onlyOutside(userAdress_)
+        onlyOutside(userAddress_)
     {
-        _register(userAdress_, timestamp_);
+        _register(userAddress_, timestamp_);
     }
 
-    function exit(address userAdress_, uint256 timestamp_)
+    function exit(address userAddress_, uint256 timestamp_)
         public
+        onlyRegistered(userAddress_)
         onlyOffchainTime
-        onlyInside(userAdress_)
+        onlyInside(userAddress_)
     {
-        _register(userAdress_, timestamp_);
+        _register(userAddress_, timestamp_);
     }
 
-    function register(address userAdress_, uint256 timestamp_)
+    function register(address userAddress_, uint256 timestamp_)
         public
+        onlyRegistered(userAddress_)
         onlyOffchainTime
     {
-        _register(userAdress_, timestamp_);
+        _register(userAddress_, timestamp_);
     }
 
     /**
