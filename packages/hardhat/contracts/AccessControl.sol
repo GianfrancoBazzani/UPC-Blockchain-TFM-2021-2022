@@ -6,12 +6,10 @@ import "./FareCalculator.sol";
 import "./AccessControlToken.sol";
 
 /* TO DO LIST;
-    - checkejar manualment occupancy
     - posar camps privat
     - getCurrentFare y getFare()
     - checkejar que la interface es d'un cert tipus
     - batched versions com future qork
-    - posar camps privats privats
     - comentaris
 */
 contract AccessControl is Ownable {

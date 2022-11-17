@@ -63,6 +63,8 @@ describe("AccessControl", function () {
       await accessControl.connect(hardwareAddress)["enter(address)"](user1.address);
       await accessControl.addUser(user2.address);
       await accessControl.connect(hardwareAddress)["enter(address)"](user2.address);
+      await expect(accessControl.connect(hardwareAddress)["enter(address)"](owner.address)).to.be.revertedWith(
+        "The user is not outside");
       expect(await accessControl["occupancy()"]()).to.equal(3);
       await time.increase(2);
       await accessControl.connect(hardwareAddress)["exit(address)"](owner.address);
@@ -72,6 +74,8 @@ describe("AccessControl", function () {
       expect(await accessControl["occupancy()"]()).to.equal(0);
       const listRegister = await accessControl.getUserRegisters(user1.address)
       expect(listRegister.length).to.be.equal(2)
+      await expect(accessControl.connect(hardwareAddress)["exit(address)"](owner.address)).to.be.revertedWith(
+        "The user is not inside");
     });
     it("Should increase/decrease occupancy when users enter/exit (offchain version) ", async function () {
       const { accessControl, owner, hardwareAddress, user1, user2 } = await loadFixture(deployOffchainFixture);
@@ -96,6 +100,8 @@ describe("AccessControl", function () {
       expect(await accessControl["occupancy(uint256,uint256)"](1, 5)).to.equal(3);
       expect(await accessControl["isInside(address,uint256)"](owner.address, 12)).to.equal(false);
       const listRegister = await accessControl.getUserRegisters(user1.address)
+      await expect(accessControl.connect(hardwareAddress)["enter(address)"](owner.address)).to.be.revertedWith(
+        "The onchainTime value should be true");
       expect(listRegister.length).to.be.equal(2)
     });
     it("Should increase/decrease occupancy when users register ", async function () {
@@ -171,6 +177,11 @@ describe("AccessControl", function () {
       await accessControl.addUser(owner.address);
       await expect(accessControl["enter(address)"](owner.address)).to.be.revertedWith(
         "You're not the hardware");
+    });
+    it("Should revert if a non-owner address calls the function adduser", async function () {
+      const { accessControl, owner, hardwareAddress } = await loadFixture(deployOnchainFixture);
+      await expect(accessControl.connect(hardwareAddress).addUser(owner.address)).to.be.revertedWith(
+        "Ownable: caller is not the owner");
     });
     it("Should revert if a non-registered user enters", async function () {
       const { accessControl, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
