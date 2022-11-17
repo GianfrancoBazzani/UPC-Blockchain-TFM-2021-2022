@@ -78,7 +78,7 @@ contract AccessControl is Ownable {
     }
 
     modifier onlyOffchainTime() {
-        require(onchainTime == false, "The onchainTime value should be true");
+        require(onchainTime == false, "The onchainTime value should be false");
         _;
     }
 
@@ -232,15 +232,17 @@ contract AccessControl is Ownable {
         public
         view
         onlyRegistered(userAddress_)
+        onlyOnchainTime
         returns (bool)
     {
-        return user[userID[msg.sender] - 1].isInside;
+        return user[userID[userAddress_] - 1].isInside;
     }
 
     function isInside(address userAddress_, uint256 timestamp_)
         public
         view
         onlyRegistered(userAddress_)
+        onlyOffchainTime
         returns (bool)
     {
         return _isInsideID(userID[userAddress_] - 1, timestamp_);
