@@ -19,7 +19,7 @@ contract Fare1 is FareCalculator {
         address, /*userAddress_*/
         address /*contractAddress_*/
     ) public pure override returns (uint256) {
-        return stop_ - start_;
+        return 10 * (stop_ - start_);
     }
 }
 
@@ -31,12 +31,12 @@ contract Fare2 is FareCalculator {
         address, /*userAddress_*/
         address /*contractAddress_*/
     ) public pure override returns (uint256) {
-        uint256 cost = 1000;
+        uint256 cost = 10;
         uint256 elapsedTime = stop_ - start_;
         if (occupancy_ < 100) {
-            cost += 10 * elapsedTime;
+            cost += 1 * elapsedTime;
         } else {
-            cost += 20 * elapsedTime;
+            cost += 2 * elapsedTime;
         }
         return cost;
     }

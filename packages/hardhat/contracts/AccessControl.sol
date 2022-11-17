@@ -16,6 +16,7 @@ import "./AccessControlToken.sol";
 */
 contract AccessControl is Ownable {
     event UserBlocked(address indexed userAddress_, uint256 indexed debt);
+    event UserUnblocked(address indexed userAddress_);
     event NewFare(address indexed fareAddress_);
     event DebtPayed(address indexed userAdrdress_);
 
@@ -60,14 +61,6 @@ contract AccessControl is Ownable {
             userID[userAdress_] > 0 &&
                 user[userID[userAdress_] - 1].status == Status.ACTIVATED,
             "This user is not activated"
-        );
-        _;
-    }
-
-    modifier onlyIdInRange(address userAddress_) {
-        require(
-            msg.sender == userAddress_ || this.owner() == userAddress_,
-            "The address is not msg.sener or owner"
         );
         _;
     }
@@ -150,6 +143,7 @@ contract AccessControl is Ownable {
         UserData storage tmpUser = user[userID[userAdrdress_] - 1];
         require(tmpUser.status == Status.BLOCKED, "The user is not blocked");
         tmpUser.status = Status.ACTIVATED;
+        emit UserUnblocked(userAdrdress_);
     }
 
     function addFare(address fareAddress_) public onlyOwner {
@@ -208,12 +202,21 @@ contract AccessControl is Ownable {
     /**
      * pay debt
      */
-    function payDebt() public onlyRegistered(msg.sender) {
+    function myDebt() public view onlyRegistered(msg.sender) returns (uint256) {
+        return user[userID[msg.sender] - 1].debt;
+    }
+
+    function payDebt(uint256 amount_) public onlyRegistered(msg.sender) {
         uint256 debt = user[userID[msg.sender] - 1].debt;
-        bool sent = token.transferFrom(msg.sender, address(this), debt);
-        require(sent, "Failed to pay debt");
-        user[userID[msg.sender] - 1].debt = 0;
-        emit DebtPayed(msg.sender);
+        if (debt < amount_) {
+            amount_ = debt;
+        }
+        if (amount_ > 0) {
+            bool sent = token.transferFrom(msg.sender, this.owner(), amount_);
+            require(sent, "Failed to pay debt");
+            user[userID[msg.sender] - 1].debt = debt - amount_;
+            emit DebtPayed(msg.sender);
+        }
     }
 
     /**
@@ -249,13 +252,7 @@ contract AccessControl is Ownable {
     }
 
     function occupancy() public view returns (uint256) {
-        uint256 nInside = 0;
-        for (uint256 i = 0; i < nUsers; ++i) {
-            if (_isInsideID(i, block.timestamp)) {
-                nInside += 1;
-            }
-        }
-        return nInside;
+        return occupancy(block.timestamp);
     }
 
     function occupancy(uint256 timestamp_) public view returns (uint256) {
@@ -387,7 +384,7 @@ contract AccessControl is Ownable {
             UserData storage tmpUser = user[userID[userAddress_] - 1];
             tmpUser.debt += cost;
             tmpUser.status = Status.BLOCKED;
-            uint256 allowance = token.allowance(msg.sender, address(this));
+            uint256 allowance = token.allowance(userAddress_, address(this));
             if (allowance < cost) {
                 emit UserBlocked(userAddress_, cost - allowance);
                 cost = allowance;
@@ -395,7 +392,7 @@ contract AccessControl is Ownable {
             if (cost > 0) {
                 bool sent = token.transferFrom(
                     userAddress_,
-                    address(this),
+                    this.owner(),
                     cost
                 );
                 require(sent, "Failed to pay on exit");
