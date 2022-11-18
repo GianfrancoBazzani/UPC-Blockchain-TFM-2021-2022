@@ -30,6 +30,7 @@ const Wallet = () => {
       chain.rinkeby,
       chain.localhost,
       chain.hardhat,
+      chain.goerli,
     ],
     [alchemyProvider({ alchemyId: process.env.ALCHEMY_ID }), publicProvider()]
   );

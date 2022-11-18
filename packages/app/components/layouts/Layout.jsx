@@ -50,6 +50,11 @@ const Layout = ({page}) => {
           <Text style={{fontWeight: page === 'approve' ? 'bold' : 'none'}}>Approve</Text>
         </Link>
       </Container>
+      <Container>
+        <Link href="/manager">
+          <Text style={{fontWeight: page === 'manager' ? 'bold' : 'none'}}>Manager</Text>
+        </Link>
+      </Container>
       <div style={{display: 'flex', marginLeft: 'auto'}}>
       <Wallet></Wallet>
       </div>
