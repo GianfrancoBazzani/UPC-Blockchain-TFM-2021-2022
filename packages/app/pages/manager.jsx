@@ -119,9 +119,14 @@ const Manager = () => {
     <>
       <Layout page={"manager"} />
       <MainContainer style={{ marginTop: "15rem" }} maxWidth={"30rem"}>
+        {!connected &&
         <div style={{ textAlign: "center" }}>
           <Text>Sign to check if you're the manager!</Text>
-        </div>
+        </div>}
+        {connected &&
+        <div style={{ textAlign: "center" }}>
+          <Text>Signed!</Text>
+        </div>}
         {!connected && (
           <TextContainer
             maxWidth={"10rem"}
