@@ -29,34 +29,47 @@ const Container = styled.div`
   }
 `;
 
-const Layout = ({page}) => {
+const Layout = ({ page }) => {
   return (
     <Header>
       <Link href="/">
-        <Image src="/static/images/logo.png" width={"48rem"} height={"48rem"} style={{cursor: 'pointer'}}/>
+        <Image
+          src="/static/images/logo.png"
+          width={"48rem"}
+          height={"48rem"}
+          style={{ cursor: "pointer" }}
+        />
       </Link>
-      <Container>
-        <Link href="/registers">
-          <Text style={{fontWeight: page === 'registers' ? 'bold' : 'none'}}>Registers</Text>
-        </Link>
-      </Container>
-      <Container>
-        <Link href="/debts">
-          <Text style={{fontWeight: page === 'debts' ? 'bold' : 'none'}}>Debts</Text>
-        </Link>
-      </Container>
-      <Container>
-        <Link href="/approve">
-          <Text style={{fontWeight: page === 'approve' ? 'bold' : 'none'}}>Approve</Text>
-        </Link>
-      </Container>
-      <Container>
-        <Link href="/manager">
-          <Text style={{fontWeight: page === 'manager' ? 'bold' : 'none'}}>Manager</Text>
-        </Link>
-      </Container>
-      <div style={{display: 'flex', marginLeft: 'auto'}}>
-      <Wallet></Wallet>
+      <Link href="/registers">
+        <Container>
+          <Text style={{ fontWeight: page === "registers" ? "bold" : "none" }}>
+            Registers
+          </Text>
+        </Container>
+      </Link>
+      <Link href="/debts">
+        <Container>
+          <Text style={{ fontWeight: page === "debts" ? "bold" : "none" }}>
+            Debts
+          </Text>
+        </Container>
+      </Link>
+      <Link href="/approve">
+        <Container>
+          <Text style={{ fontWeight: page === "approve" ? "bold" : "none" }}>
+            Approve
+          </Text>
+        </Container>
+      </Link>
+      <Link href="/manager">
+        <Container>
+          <Text style={{ fontWeight: page === "manager" ? "bold" : "none" }}>
+            Manager
+          </Text>
+        </Container>
+      </Link>
+      <div style={{ display: "flex", marginLeft: "auto" }}>
+        <Wallet></Wallet>
       </div>
     </Header>
   );
