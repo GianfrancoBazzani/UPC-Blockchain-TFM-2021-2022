@@ -55,29 +55,27 @@ const TextContainer = styled(MainContainer)`
   }
 `;
 
-
-const Debts = () => {
+const Approve = () => {
   // States
-  const [debt, setDebt] = useState(0);
+  const [approve, setApprove] = useState(0);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setDebt(event.target.value);
-  }
+  };
 
   const handleClick = () => {
-    console.log(debt);
-  }
-
+    console.log(approve);
+  };
   return (
     <>
-      <Layout page={'debts'}/>
+      <Layout page={'approve'}/>
       <MainContainer style={{ marginTop: "5rem" }} maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
-          <Text>Debts</Text>
+          <Text>Approve</Text>
         </div>
         <MainContainer maxWidth={"30rem"} color={"#e8ecfb"}>
           <div style={{ marginLeft: "0rem", padding: "1rem 1rem 1rem 1rem" }}>
-            <Input type="number" id="debt" name="debt" defaultValue={debt} onChange={handleChange} value={debt}></Input>
+            <Input type="number" id="approve" name="approve" defaultValue={approve} onChange={handleChange} value={approve}></Input>
           </div>
         </MainContainer>
         <TextContainer
@@ -86,11 +84,11 @@ const Debts = () => {
           color={"#e8ecfb"}
           onClick={handleClick}
         >
-          <Text>Pay Debt</Text>
+          <Text>Approve Tokens</Text>
         </TextContainer>
       </MainContainer>
     </>
   );
 };
 
-export default Debts;
+export default Approve;

@@ -46,8 +46,8 @@ const Layout = ({page}) => {
         </Link>
       </Container>
       <Container>
-        <Link href="/allowance">
-          <Text style={{fontWeight: page === 'allowance' ? 'bold' : 'none'}}>Allowance</Text>
+        <Link href="/approve">
+          <Text style={{fontWeight: page === 'approve' ? 'bold' : 'none'}}>Approve</Text>
         </Link>
       </Container>
       <div style={{display: 'flex', marginLeft: 'auto'}}>
