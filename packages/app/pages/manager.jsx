@@ -7,7 +7,57 @@ import LitJsSdk from "lit-js-sdk";
 import Cookies from "js-cookie";
 import { UUIDContext } from "../Context";
 import Layout from "../components/layouts/Layout";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+
+// Styles
+const MainContainer = styled.div`
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 95%;
+  max-width: ${(props) => props.maxWidth || "inherit"};
+
+  background-color: ${(props) => props.color || "inherit"};
+
+  border: 2px solid #5d6785;
+  border-radius: 15px;
+
+  &:after {
+    position: absolute;
+    content: "";
+    bottom: -2rem;
+    height: 2rem;
+    width: 0.1rem;
+  }
+`;
+
+const Text = styled.p`
+  font-size: 16px;
+  font-family: sans-serif;
+  color: #0d111c;
+  font-weight: bold;
+`;
+
+const Input = styled.input`
+  border: none;
+  background: transparent;
+  outline: 0;
+  font-size: 27.5px;
+  font-family: sans-serif;
+  color: #0d111c;
+  font-weight: bold;
+  appearance: none;
+`;
+
+const TextContainer = styled(MainContainer)`
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d7d9e3;
+  }
+`;
 
 const accessControlConditions = [
   {
@@ -67,12 +117,32 @@ const Manager = () => {
 
   return (
     <>
-      <Layout page={"manager"}/>
-      <h1>Manager Page</h1>
-      {!connected && <button onClick={connect}>Manager</button>}
-      <a onClick={navigate} style={{ cursor: "pointer" }}>
-        Go 
-      </a>
+      <Layout page={"manager"} />
+      <MainContainer style={{ marginTop: "15rem" }} maxWidth={"30rem"}>
+        <div style={{ textAlign: "center" }}>
+          <Text>Sign to check if you're the manager!</Text>
+        </div>
+        {!connected && (
+          <TextContainer
+            maxWidth={"10rem"}
+            style={{ marginTop: "1rem", marginBottom: "1rem" }}
+            color={"#e8ecfb"}
+            onClick={connect}
+          >
+            <Text>Sign</Text>
+          </TextContainer>
+        )}
+        {connected && (
+            <TextContainer
+              maxWidth={"10rem"}
+              style={{ marginTop: "1rem", marginBottom: "1rem" }}
+              color={"#e8ecfb"}
+              onClick={navigate}
+            >
+              <Text>Go to the manager page</Text>
+            </TextContainer>
+        )}
+      </MainContainer>
     </>
   );
 };

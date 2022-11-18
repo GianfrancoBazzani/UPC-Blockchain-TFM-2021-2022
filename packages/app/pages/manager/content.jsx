@@ -37,6 +37,13 @@ const Text = styled.p`
   font-weight: bold;
 `;
 
+const TextTitle = styled.p`
+  font-size: 30px;
+  font-family: sans-serif;
+  color: #0d111c;
+  font-weight: bold;
+`;
+
 const Input = styled.input`
   border: none;
   background: transparent;
@@ -57,6 +64,11 @@ const TextContainer = styled(MainContainer)`
   }
 `;
 
+const TextContainerTitle = styled(MainContainer)`
+  text-align: center;
+  
+`;
+
 const Container = ({ name, buttonName, callback }) => {
   // States
   const [address, setAddress] = useState("0x123");
@@ -70,7 +82,7 @@ const Container = ({ name, buttonName, callback }) => {
   };
 
   return (
-    <div style={{marginBottom: '2rem'}}>
+    <div style={{ marginBottom: "2rem" }}>
       <MainContainer maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
           <Text>{name}</Text>
@@ -114,9 +126,23 @@ const Manager = (props) => {
   };
   if (!props.authorized) {
     return (
+      <>
+        <Layout page={"manager"} />
+        <TextContainerTitle
+          maxWidth={"30rem"}
+          style={{ marginTop: "15rem", marginBottom: "1rem" }}
+          color={"#e8ecfb"}
+        >
+          <TextTitle>You're not the manager!</TextTitle>
+        </TextContainerTitle>
+      </>
+    );
+  }
+  return (
+    <div>
       <div>
         <Layout page={"manager"} />
-        <div style={{paddingTop: '5rem'}}>
+        <div style={{ paddingTop: "5rem" }}>
           <Container
             name={"User"}
             buttonName={"Add User"}
@@ -140,11 +166,6 @@ const Manager = (props) => {
           />
         </div>
       </div>
-    );
-  }
-  return (
-    <div>
-      <h2>YOu're the manager</h2>
     </div>
   );
 };
