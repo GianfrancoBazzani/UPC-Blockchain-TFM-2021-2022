@@ -93,7 +93,7 @@ contract AccessControl is Ownable {
     }
 
     /**
-     * constructor and users/fares managment
+     * constructor
      */
 
     constructor(
@@ -106,6 +106,10 @@ contract AccessControl is Ownable {
         token = AccessControlToken(tokenAddress_);
         nUsers = 0;
     }
+
+    /**
+     * users
+     */
 
     function addUser(address userAddress_) public onlyOwner {
         require(userID[userAddress_] == 0, "User already added");
@@ -145,11 +149,31 @@ contract AccessControl is Ownable {
         emit UserUnblocked(userAdrdress_);
     }
 
+    /**
+     * Fares
+     */
     function addFare(address fareAddress_) public onlyOwner {
         //rick: aqui em falta comprobar que implementa la interface
         fareTimeStamp.push(block.timestamp);
         fare.push(FareCalculator(fareAddress_));
         emit NewFare(fareAddress_);
+    }
+
+    function myDebt() public view onlyRegistered(msg.sender) returns (uint256) {
+        return user[userID[msg.sender] - 1].debt;
+    }
+
+    function payDebt(uint256 amount_) public onlyRegistered(msg.sender) {
+        uint256 debt = user[userID[msg.sender] - 1].debt;
+        if (debt < amount_) {
+            amount_ = debt;
+        }
+        if (amount_ > 0) {
+            bool sent = token.transferFrom(msg.sender, this.owner(), amount_);
+            require(sent, "Failed to pay debt");
+            user[userID[msg.sender] - 1].debt = debt - amount_;
+            emit DebtPayed(msg.sender);
+        }
     }
 
     /**
@@ -205,26 +229,6 @@ contract AccessControl is Ownable {
         onlyOffchainTime
     {
         _register(userAddress_, timestamp_);
-    }
-
-    /**
-     * pay debt
-     */
-    function myDebt() public view onlyRegistered(msg.sender) returns (uint256) {
-        return user[userID[msg.sender] - 1].debt;
-    }
-
-    function payDebt(uint256 amount_) public onlyRegistered(msg.sender) {
-        uint256 debt = user[userID[msg.sender] - 1].debt;
-        if (debt < amount_) {
-            amount_ = debt;
-        }
-        if (amount_ > 0) {
-            bool sent = token.transferFrom(msg.sender, this.owner(), amount_);
-            require(sent, "Failed to pay debt");
-            user[userID[msg.sender] - 1].debt = debt - amount_;
-            emit DebtPayed(msg.sender);
-        }
     }
 
     /**
@@ -373,19 +377,15 @@ contract AccessControl is Ownable {
         uint256 stop_,
         uint256 occupancy_
     ) internal {
-        uint256 nFares = fare.length;
+        int id = _fareID(start_);
         uint256 cost = 0;
-        for (uint256 i = 0; i < nFares; i++) {
-            if (fareTimeStamp[nFares - 1 - i] < start_) {
-                cost = fare[i].evaluate(
-                    start_,
-                    stop_,
-                    occupancy_,
-                    userAddress_,
-                    address(this)
-                );
-                break;
-            }
+        if (id >= 0) {
+            cost = fare[uint256(id)].evaluate(
+                start_,
+                stop_,
+                occupancy_,
+                userAddress_
+            );
         }
 
         if (cost > 0) {
@@ -408,5 +408,17 @@ contract AccessControl is Ownable {
                 if (tmpUser.debt == 0) tmpUser.status = Status.ACTIVATED;
             }
         }
+    }
+
+    function _fareID(uint256 timeStamp_) internal returns (int) {
+        uint256 nFares = fare.length;
+        int id = -1;
+        for (uint256 i = 0; i < nFares; i++) {
+            if (fareTimeStamp[nFares - 1 - i] < timeStamp_) {
+                id = int(i);
+                break;
+            }
+        }
+        return id;
     }
 }

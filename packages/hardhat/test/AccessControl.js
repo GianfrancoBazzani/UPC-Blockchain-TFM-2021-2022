@@ -287,12 +287,12 @@ describe("AccessControl", function () {
     it("Should obtain expected cost from Fare1 ", async function () {
       const Fare1 = await hre.ethers.getContractFactory("Fare1");
       const fare1 = await Fare1.deploy();
-      expect(await fare1.evaluate(1, 65, 0, fare1.address, fare1.address)).to.equal(640);
+      expect(await fare1.evaluate(1, 65, 0, fare1.address)).to.equal(640);
     });
     it("Should obtain expected cost from Fare2 ", async function () {
       const Fare2 = await hre.ethers.getContractFactory("Fare2");
       const fare2 = await Fare2.deploy();
-      expect(await fare2.evaluate(1, 65, 300, fare2.address, fare2.address)).to.equal(138);
+      expect(await fare2.evaluate(1, 65, 300, fare2.address)).to.equal(138);
 
     });
   });
