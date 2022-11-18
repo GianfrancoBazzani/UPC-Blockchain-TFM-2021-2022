@@ -31,13 +31,13 @@ contract AccessControl is Ownable {
         uint256 debt;
     }
 
-    mapping(address => uint256) public userID;
-    UserData[] public user;
+    mapping(address => uint256) public usersID;
+    UserData[] public users;
     uint256 public nUsers;
     AccessControlToken public token;
 
-    FareCalculator[] public fare;
-    uint256[] public fareTimeStamp;
+    FareCalculator[] public fares;
+    uint256[] public faresTimeStamp;
 
     address public hardwareAddress;
     bool public onchainTime;
@@ -45,20 +45,21 @@ contract AccessControl is Ownable {
     /**
      * modifiers
      */
+
     modifier onlyHardware() {
         require(msg.sender == hardwareAddress, "You're not the hardware");
         _;
     }
 
     modifier onlyRegistered(address userAddress_) {
-        require(userID[userAddress_] > 0, "This user is not registered");
+        require(usersID[userAddress_] > 0, "This user is not registered");
         _;
     }
 
     modifier onlyActivated(address userAdress_) {
         require(
-            userID[userAdress_] > 0 &&
-                user[userID[userAdress_] - 1].status == Status.ACTIVATED,
+            usersID[userAdress_] > 0 &&
+                users[usersID[userAdress_] - 1].status == Status.ACTIVATED,
             "This user is not activated"
         );
         _;
@@ -75,7 +76,7 @@ contract AccessControl is Ownable {
     }
 
     modifier onlyOutside(address userAddress_) {
-        UserData storage tmpUser = user[userID[userAddress_] - 1];
+        UserData storage tmpUser = users[usersID[userAddress_] - 1];
         require(
             (tmpUser.registers).length % 2 == 0 && !tmpUser.isInside,
             "The user is not outside"
@@ -84,7 +85,7 @@ contract AccessControl is Ownable {
     }
 
     modifier onlyInside(address userAddress_) {
-        UserData storage tmpUser = user[userID[userAddress_] - 1];
+        UserData storage tmpUser = users[usersID[userAddress_] - 1];
         require(
             (tmpUser.registers).length % 2 == 1 && tmpUser.isInside,
             "The user is not inside"
@@ -112,11 +113,11 @@ contract AccessControl is Ownable {
      */
 
     function addUser(address userAddress_) public onlyOwner {
-        require(userID[userAddress_] == 0, "User already added");
-        user.push();
+        require(usersID[userAddress_] == 0, "User already added");
+        users.push();
         nUsers += 1;
-        userID[userAddress_] = nUsers;
-        UserData storage tmpUser = user[nUsers - 1];
+        usersID[userAddress_] = nUsers;
+        UserData storage tmpUser = users[nUsers - 1];
         tmpUser.status = Status.ACTIVATED;
         tmpUser.isInside = false;
     }
@@ -125,7 +126,7 @@ contract AccessControl is Ownable {
         public
         onlyActivated(msg.sender)
     {
-        UserData storage tmpUser = user[userID[msg.sender] - 1];
+        UserData storage tmpUser = users[usersID[msg.sender] - 1];
         tmpUser.autentificator = newAutentificator_;
     }
 
@@ -134,7 +135,7 @@ contract AccessControl is Ownable {
         onlyOwner
         onlyActivated(userAdrdress_)
     {
-        user[userID[userAdrdress_] - 1].status = Status.BLOCKED;
+        users[usersID[userAdrdress_] - 1].status = Status.BLOCKED;
         emit UserBlocked(userAdrdress_, 0);
     }
 
@@ -143,7 +144,7 @@ contract AccessControl is Ownable {
         onlyOwner
         onlyRegistered(userAdrdress_)
     {
-        UserData storage tmpUser = user[userID[userAdrdress_] - 1];
+        UserData storage tmpUser = users[usersID[userAdrdress_] - 1];
         require(tmpUser.status == Status.BLOCKED, "The user is not blocked");
         tmpUser.status = Status.ACTIVATED;
         emit UserUnblocked(userAdrdress_);
@@ -154,24 +155,39 @@ contract AccessControl is Ownable {
      */
     function addFare(address fareAddress_) public onlyOwner {
         //rick: aqui em falta comprobar que implementa la interface
-        fareTimeStamp.push(block.timestamp);
-        fare.push(FareCalculator(fareAddress_));
+        faresTimeStamp.push(block.timestamp);
+        fares.push(FareCalculator(fareAddress_));
         emit NewFare(fareAddress_);
     }
 
+    function fare(uint256 timeStamp_) public view returns (address) {
+        int id = _fareID(timeStamp_);
+        address fareAddress;
+        if (id >= 0) {
+            fareAddress = address(fares[uint256(id)]);
+        } else {
+            fareAddress = address(0);
+        }
+        return fareAddress;
+    }
+
+    function fare() public view returns (address) {
+        return fare(block.timestamp);
+    }
+
     function myDebt() public view onlyRegistered(msg.sender) returns (uint256) {
-        return user[userID[msg.sender] - 1].debt;
+        return users[usersID[msg.sender] - 1].debt;
     }
 
     function payDebt(uint256 amount_) public onlyRegistered(msg.sender) {
-        uint256 debt = user[userID[msg.sender] - 1].debt;
+        uint256 debt = users[usersID[msg.sender] - 1].debt;
         if (debt < amount_) {
             amount_ = debt;
         }
         if (amount_ > 0) {
             bool sent = token.transferFrom(msg.sender, this.owner(), amount_);
             require(sent, "Failed to pay debt");
-            user[userID[msg.sender] - 1].debt = debt - amount_;
+            users[usersID[msg.sender] - 1].debt = debt - amount_;
             emit DebtPayed(msg.sender);
         }
     }
@@ -240,7 +256,7 @@ contract AccessControl is Ownable {
         onlyRegistered(userAddress_)
         returns (uint256[] memory)
     {
-        return user[userID[userAddress_] - 1].registers;
+        return users[usersID[userAddress_] - 1].registers;
     }
 
     function isInside(address userAddress_)
@@ -250,7 +266,7 @@ contract AccessControl is Ownable {
         onlyOnchainTime
         returns (bool)
     {
-        return user[userID[userAddress_] - 1].isInside;
+        return users[usersID[userAddress_] - 1].isInside;
     }
 
     function isInside(address userAddress_, uint256 timestamp_)
@@ -260,7 +276,7 @@ contract AccessControl is Ownable {
         onlyOffchainTime
         returns (bool)
     {
-        return _isInsideID(userID[userAddress_] - 1, timestamp_);
+        return _isInsideID(usersID[userAddress_] - 1, timestamp_);
     }
 
     function occupancy() public view returns (uint256) {
@@ -297,7 +313,7 @@ contract AccessControl is Ownable {
         onlyHardware
         onlyActivated(userAddress_)
     {
-        UserData storage tmpUser = user[userID[userAddress_] - 1];
+        UserData storage tmpUser = users[usersID[userAddress_] - 1];
         tmpUser.isInside = !tmpUser.isInside;
         tmpUser.registers.push(timestamp_);
 
@@ -321,7 +337,7 @@ contract AccessControl is Ownable {
         require(start_ < end_, "This is not an interval");
         uint256 interval = end_ - start_;
         uint256 sum = 0;
-        UserData storage tmpUser = user[userID_];
+        UserData storage tmpUser = users[userID_];
         uint256 nRegisters = tmpUser.registers.length;
         uint256 maxA;
         uint256 minB;
@@ -355,7 +371,7 @@ contract AccessControl is Ownable {
             "Out of range access to user"
         );
         bool isin = false;
-        UserData storage tmpUser = user[userID_];
+        UserData storage tmpUser = users[userID_];
         uint256 nRegisters = tmpUser.registers.length;
         for (uint256 i = 0; i < nRegisters; i += 2) {
             if (timestamp_ >= tmpUser.registers[i]) {
@@ -380,7 +396,7 @@ contract AccessControl is Ownable {
         int id = _fareID(start_);
         uint256 cost = 0;
         if (id >= 0) {
-            cost = fare[uint256(id)].evaluate(
+            cost = fares[uint256(id)].evaluate(
                 start_,
                 stop_,
                 occupancy_,
@@ -389,7 +405,7 @@ contract AccessControl is Ownable {
         }
 
         if (cost > 0) {
-            UserData storage tmpUser = user[userID[userAddress_] - 1];
+            UserData storage tmpUser = users[usersID[userAddress_] - 1];
             tmpUser.debt += cost;
             tmpUser.status = Status.BLOCKED;
             uint256 allowance = token.allowance(userAddress_, address(this));
@@ -410,11 +426,11 @@ contract AccessControl is Ownable {
         }
     }
 
-    function _fareID(uint256 timeStamp_) internal returns (int) {
-        uint256 nFares = fare.length;
+    function _fareID(uint256 timeStamp_) internal view returns (int) {
+        uint256 nFares = fares.length;
         int id = -1;
         for (uint256 i = 0; i < nFares; i++) {
-            if (fareTimeStamp[nFares - 1 - i] < timeStamp_) {
+            if (faresTimeStamp[nFares - 1 - i] < timeStamp_) {
                 id = int(i);
                 break;
             }

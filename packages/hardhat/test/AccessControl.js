@@ -196,11 +196,18 @@ describe("AccessControl", function () {
     });
 
   });
-  describe("Occupancy", function () {
-
-
-  });
   describe("Fares and transactions", function () {
+    it("Should fare(timstamp) return address(0) when there is no fare in the given timestamp", async function () {
+      const { accessControl, fare1 } = await loadFixture(deployOnchainFixture);
+      expect(await accessControl["fare()"]()).to.equal(ethers.constants.AddressZero);
+      expect(await accessControl["fare(uint256)"](1)).to.equal(ethers.constants.AddressZero);
+    });
+    it("Should fare(timstamp) return the expected address ", async function () {
+      const { accessControl, fare1 } = await loadFixture(deployOnchainFixture);
+      await accessControl.addFare(fare1.address);
+      await time.increase(1);
+      expect(await accessControl["fare()"]()).to.equal(fare1.address);
+    });
     it("Should emit a message if a new fare is added ", async function () {
       const { accessControl, fare1 } = await loadFixture(deployOnchainFixture);
       await expect(accessControl.addFare(fare1.address))
