@@ -31,9 +31,9 @@ contract Fare2 is FareCalculator {
         uint256 cost = 10;
         uint256 elapsedTime = stop_ - start_;
         if (occupancy_ < 100) {
-            cost += 1 * elapsedTime;
+            cost += 5 * elapsedTime;
         } else {
-            cost += 2 * elapsedTime;
+            cost += 10 * elapsedTime;
         }
         return cost;
     }

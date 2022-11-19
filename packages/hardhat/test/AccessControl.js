@@ -10,19 +10,24 @@ const hre = require("hardhat");
 describe("AccessControl", function () {
 
   async function deployOnchainFixture() {
-    const tokensAmount = 1_000_000_000;
+    const tokensAmount = 1_000_000_000_000;
     const AccessControl = await hre.ethers.getContractFactory("AccessControl");
     const Fare1 = await hre.ethers.getContractFactory("Fare1");
     const Fare2 = await hre.ethers.getContractFactory("Fare2");
     const AccessControlToken = await hre.ethers.getContractFactory("AccessControlToken");
+    const TokensVendor = await ethers.getContractFactory("TokensVendor");
+
 
     const [owner, hardwareAddress, user1, user2] = await ethers.getSigners();
     const fare1 = await Fare1.deploy();
     const fare2 = await Fare2.deploy();
     const token = await AccessControlToken.deploy("AccessControlToken", "ACT", tokensAmount);
     const accessControl = await AccessControl.deploy(hardwareAddress.address, token.address, true);
+    const vendor = await TokensVendor.deploy(token.address);
+    await token.approve(vendor.address, 1_000_000);
 
-    return { accessControl, fare1, fare2, token, owner, hardwareAddress, user1, user2 };
+
+    return { accessControl, fare1, fare2, token, owner, hardwareAddress, user1, user2, vendor };
   }
   async function deployOffchainFixture() {
     const tokensAmount = 1_000_000_000;
@@ -242,11 +247,11 @@ describe("AccessControl", function () {
 
     });
     it("Should pay a on exit if there is enough allowance", async function () {
-      const { accessControl, fare1, token, user1, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
+      const { accessControl, fare1, token, user1, hardwareAddress, vendor } = await loadFixture(deployOnchainFixture);
       await accessControl.addFare(fare1.address);
       await accessControl.addUser(user1.address);
-      await token.transfer(user1.address, 1000);
-      expect(await token.connect(user1).balanceOf(user1.address)).to.equal(1000);
+      await vendor.connect(user1).buyTokens({ value: 1000 });
+      expect(await token.connect(user1).balanceOf(user1.address)).to.equal(10000);
       await token.connect(user1).approve(accessControl.address, 1000);
       expect(await token.connect(user1).allowance(user1.address, accessControl.address)).to.equal(1000);
       await time.increase(1);
@@ -257,11 +262,11 @@ describe("AccessControl", function () {
 
     });
     it("Should pay a debt when the allowance has been generated", async function () {
-      const { accessControl, fare1, token, user1, hardwareAddress, owner } = await loadFixture(deployOnchainFixture);
+      const { accessControl, fare1, token, user1, hardwareAddress, vendor } = await loadFixture(deployOnchainFixture);
       await accessControl.addFare(fare1.address);
       await accessControl.addUser(user1.address);
-      await token.transfer(user1.address, 1000);
-      expect(await token.connect(user1).balanceOf(user1.address)).to.equal(1000);
+      await vendor.connect(user1).buyTokens({ value: 1000 });
+      expect(await token.connect(user1).balanceOf(user1.address)).to.equal(10000);
       await accessControl.connect(hardwareAddress)["enter(address)"](user1.address);
       await time.increase(3);
       await accessControl.connect(hardwareAddress)["exit(address)"](user1.address);
@@ -299,7 +304,7 @@ describe("AccessControl", function () {
     it("Should obtain expected cost from Fare2 ", async function () {
       const Fare2 = await hre.ethers.getContractFactory("Fare2");
       const fare2 = await Fare2.deploy();
-      expect(await fare2.evaluate(1, 65, 300, fare2.address)).to.equal(138);
+      expect(await fare2.evaluate(1, 65, 300, fare2.address)).to.equal(650);
 
     });
   });

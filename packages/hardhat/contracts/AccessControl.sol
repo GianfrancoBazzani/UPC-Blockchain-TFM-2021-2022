@@ -7,11 +7,8 @@ import "./AccessControlToken.sol";
 
 /* TO DO LIST;
     - posar camps privat
-    - getCurrentFare y getFare()
     - checkejar que la interface es d'un cert tipus
     - batched versions com future qork
-    - posar camps privats privats
-    - comentaris
 */
 contract AccessControl is Ownable {
     event UserBlocked(address indexed userAddress_, uint256 indexed debt);
@@ -188,7 +185,9 @@ contract AccessControl is Ownable {
             bool sent = token.transferFrom(msg.sender, this.owner(), amount_);
             require(sent, "Failed to pay debt");
             users[usersID[msg.sender] - 1].debt = debt - amount_;
-            emit DebtPayed(msg.sender);
+            if (users[usersID[msg.sender] - 1].debt == 0) {
+                emit DebtPayed(msg.sender);
+            }
         }
     }
 
