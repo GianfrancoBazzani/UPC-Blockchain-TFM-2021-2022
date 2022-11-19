@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import Layout from "../components/layouts/Layout";
-import { payDebt } from "../services/interface";
+import { getUserDebt, getUserId, payDebt } from "../services/interface";
+import { getCurrentAddress } from "../utils/metamask";
 
 // Styles
 const MainContainer = styled.div`
@@ -59,6 +60,22 @@ const TextContainer = styled(MainContainer)`
 const Debts = () => {
   // States
   const [debt, setDebt] = useState(0);
+  const [userDebt, setUserDebt] = useState(0);
+
+  
+
+  const getCurrentDebt = async () => {
+    try {
+      const addressUser = await getCurrentAddress();
+      const id = await getUserId(addressUser);
+      const response = await getUserDebt(id-1);
+      setUserDebt(response.debt.toString())
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getCurrentDebt();
 
   const handleChange = (event) => {
     setDebt(event.target.value);
@@ -78,6 +95,9 @@ const Debts = () => {
       <MainContainer style={{ marginTop: "5rem" }} maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
           <Text>Debts</Text>
+        </div>
+        <div style={{ marginLeft: "2rem" }}>
+          <Text>Current Debt: {userDebt}</Text>
         </div>
         <MainContainer maxWidth={"30rem"} color={"#e8ecfb"}>
           <div style={{ marginLeft: "0rem", padding: "1rem 1rem 1rem 1rem" }}>

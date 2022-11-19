@@ -40,6 +40,25 @@ export async function getUserRegisters(account) {
     }
 }
 
+export async function getUserId(account) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(accessControlAddress, AccessControl.abi, provider);
+        const tx = await contract.usersID(account);
+        return tx;
+    }
+}
+
+export async function getUserDebt(index) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(accessControlAddress, AccessControl.abi, provider);
+        const tx = await contract.users(index);
+        return tx;
+    }
+}
+
+
 /* Owner */
 
 export async function addUser(account) {
