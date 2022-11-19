@@ -8,9 +8,9 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Project</title>
+        <title>Access Control</title>
         <meta name="" /> 
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/static/images/upc.png" />
       </Head>
         <Layout page={"registers"}/>
         <Registers/>
