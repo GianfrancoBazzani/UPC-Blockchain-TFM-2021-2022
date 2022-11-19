@@ -34,7 +34,7 @@ const Layout = ({ page }) => {
     <Header>
       <Link href="/">
         <Image
-          src="/static/images/logo.png"
+          src="/static/images/upc.png"
           width={"48rem"}
           height={"48rem"}
           style={{ cursor: "pointer" }}
