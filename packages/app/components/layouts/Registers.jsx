@@ -3,9 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
-import Layout from "../components/layouts/Layout";
-import { getUserRegisters } from "../services/interface";
-import { getCurrentAddress } from "../utils/metamask";
+import Layout from "./Layout";
+import { getUserRegisters } from "../../services/interface";
+import { getCurrentAddress } from "../../utils/metamask";
 
 const Title = styled.p`
   font-size: 36px;
@@ -182,7 +182,6 @@ const Registers = () => {
 
   return (
     <>
-      <Layout page={"registers"} />
       <Title>Registers User</Title>
       <Container>
         <Header>

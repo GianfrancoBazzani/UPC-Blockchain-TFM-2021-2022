@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, useContext } from "react";
 import Head from 'next/head'
 import Layout from "../components/layouts/Layout";
-import LandingPage from "../components/layouts/LandingPage";
+import Registers from "../components/layouts/Registers";
 
 export default function Home() {
 
@@ -12,8 +12,8 @@ export default function Home() {
         <meta name="" /> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <Layout/>
-        <LandingPage/>
+        <Layout page={"registers"}/>
+        <Registers/>
     </div>
   )
 }

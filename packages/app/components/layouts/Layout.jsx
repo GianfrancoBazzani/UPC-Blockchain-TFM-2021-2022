@@ -40,7 +40,7 @@ const Layout = ({ page }) => {
           style={{ cursor: "pointer" }}
         />
       </Link>
-      <Link href="/registers">
+      <Link href="/">
         <Container>
           <Text style={{ fontWeight: page === "registers" ? "bold" : "none" }}>
             Registers
