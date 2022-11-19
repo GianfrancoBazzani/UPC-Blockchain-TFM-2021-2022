@@ -157,16 +157,19 @@ const Registers = () => {
         "/" +
         timeEnter.getDay() +
         "/" +
-        timeEnter.getFullYear() +
-        " ";
-      let timeExit = new Date(element.exit * 1000);
-      timeExit =
-        timeExit.getMonth() +
-        "/" +
-        timeExit.getDay() +
-        "/" +
-        timeExit.getFullYear() +
-        " ";
+        timeEnter.getFullYear() 
+      let timeExit;
+      if (element.exit === 0) {
+        timeExit = "still inside";
+      } else {
+        timeExit = new Date(element.exit * 1000);
+        timeExit =
+          timeExit.getMonth() +
+          "/" +
+          timeExit.getDay() +
+          "/" +
+          timeExit.getFullYear()
+      }
 
       return (
         <Rows key={index}>
