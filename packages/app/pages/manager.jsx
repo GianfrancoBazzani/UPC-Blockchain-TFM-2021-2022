@@ -121,7 +121,7 @@ const Manager = () => {
       <MainContainer style={{ marginTop: "15rem" }} maxWidth={"30rem"}>
         {!connected &&
         <div style={{ textAlign: "center" }}>
-          <Text>Sign to check if you're the manager!</Text>
+          <Text>Sign to check if you are the manager!</Text>
         </div>}
         {connected &&
         <div style={{ textAlign: "center" }}>

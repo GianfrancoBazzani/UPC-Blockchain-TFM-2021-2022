@@ -154,7 +154,7 @@ const Manager = (props) => {
           style={{ marginTop: "15rem", marginBottom: "1rem" }}
           color={"#e8ecfb"}
         >
-          <TextTitle>You're not the manager!</TextTitle>
+          <TextTitle>You are not the manager!</TextTitle>
         </TextContainerTitle>
       </>
     );
