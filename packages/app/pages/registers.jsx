@@ -5,6 +5,7 @@ import Image from "next/image";
 import styled from "@emotion/styled";
 import Layout from "../components/layouts/Layout";
 import { getUserRegisters } from "../services/interface";
+import { getCurrentAddress } from "../utils/metamask";
 
 const Title = styled.p`
   font-size: 36px;
@@ -96,7 +97,6 @@ const RowsTitle = styled.div`
 `;
 
 const Registers = () => {
-
   // States
   const [userRegister, setUserRegister] = useState([]);
 
@@ -108,11 +108,10 @@ const Registers = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getResponse = async (address) => {
+  const getResponse = async () => {
     try {
-      const response = await getUserRegisters(
-        "0x8791Ad03B14D8341E6f3996822CDE7ea8C045881"
-      );
+      const addressUser = await getCurrentAddress();
+      const response = await getUserRegisters(addressUser);
       setUserRegister(response);
     } catch (error) {
       console.log(error);
