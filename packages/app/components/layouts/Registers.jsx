@@ -28,7 +28,7 @@ const HeaderTitle = styled.div`
 `;
 
 const Header = styled.div`
-  border-bottom: 1px solid rgb(210, 217, 238);
+  border-bottom: 3px solid rgb(210, 217, 238);
   border-top-color: rgb(210, 217, 238);
   border-right-color: rgb(210, 217, 238);
   border-left-color: rgb(210, 217, 238);
@@ -41,7 +41,7 @@ const Header = styled.div`
   width: 100%;
   justify-content: center;
 
-  background-color: transparent;
+  background-color: #e8ecfb;
   display: grid;
   font-size: 16px;
   grid-template-columns: 1fr 2fr 4fr 4fr 4fr;
@@ -66,7 +66,7 @@ const Container = styled.div`
   border-radius: 12px;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgb(210, 217, 238);
+  border: 3px solid rgb(210, 217, 238);
 `;
 
 const Rows = styled.div`
