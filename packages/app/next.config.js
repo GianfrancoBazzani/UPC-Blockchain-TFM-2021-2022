@@ -1,8 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  exportTrailingSlash: true,
+module.exports = {
+
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+},
 
   exportPathMap: function () {
     return {
@@ -11,4 +12,5 @@ const nextConfig = {
   }
 }
 
-module.exports = nextConfig
+
+
