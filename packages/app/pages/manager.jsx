@@ -61,7 +61,7 @@ const TextContainer = styled(MainContainer)`
 
 const accessControlConditions = [
   {
-    contractAddress: "0x17C102026EDdaD6b68dEaE4f2877abcbE10269dB",
+    contractAddress: "0x61FF4401a8F05141017eE3fd75B2Db2c793Edae8",
     standardContractType: "ERC721",
     chain: "goerli",
     method: "balanceOf",

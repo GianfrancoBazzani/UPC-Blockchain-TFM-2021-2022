@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import Layout from "../components/layouts/Layout";
+import { getUserRegisters } from "../services/interface";
 
 const Title = styled.p`
   font-size: 36px;
@@ -95,8 +96,27 @@ const RowsTitle = styled.div`
 `;
 
 const Registers = () => {
-  const response = {
-    registers: [1667671104, 1667671123, 1667672104, 1668671104, 1697671104],
+
+  // States
+  const [userRegister, setUserRegister] = useState([]);
+
+  useEffect(() => {
+    if (userRegister.length === 0) {
+      getResponse();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getResponse = async (address) => {
+    try {
+      const response = await getUserRegisters(
+        "0x8791Ad03B14D8341E6f3996822CDE7ea8C045881"
+      );
+      setUserRegister(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   let setRegisters = [];
@@ -105,11 +125,11 @@ const Registers = () => {
     exit: 0,
   };
 
-  for (let i = 0; i < response.registers.length; i++) {
-    if (i % 2 === 0 && i != response.registers.length - 1) {
-      temp.enter = response.registers[i];
+  for (let i = 0; i < userRegister.length; i++) {
+    if (i % 2 === 0 && i != userRegister.length - 1) {
+      temp.enter = userRegister[i];
     } else if (i % 2 === 1 && i) {
-      temp.exit = response.registers[i];
+      temp.exit = userRegister[i];
       setRegisters.push({
         enter: temp.enter,
         exit: temp.exit,
@@ -117,7 +137,7 @@ const Registers = () => {
         payment: "12",
       });
     } else {
-      temp.enter = response.registers[i];
+      temp.enter = userRegister[i];
       temp.exit = 0;
       setRegisters.push({
         enter: temp.enter,

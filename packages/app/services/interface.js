@@ -89,13 +89,13 @@ export async function addFare(account) {
 
 /* Access Control Token */
 
-export async function approve(account, amount) {
+export async function approve( amount) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(accessControlTokenAddress, AccesControlToken.abi, signer);
-        const tx = await contract.approve(account,amount);
+        const tx = await contract.approve(accessControlAddress,amount);
         await tx.wait();
     }
 }

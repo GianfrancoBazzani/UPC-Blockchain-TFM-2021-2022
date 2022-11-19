@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import Layout from "../components/layouts/Layout";
+import { payDebt } from "../services/interface";
 
 // Styles
 const MainContainer = styled.div`
@@ -55,29 +56,39 @@ const TextContainer = styled(MainContainer)`
   }
 `;
 
-
 const Debts = () => {
   // States
   const [debt, setDebt] = useState(0);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setDebt(event.target.value);
-  }
+  };
 
-  const handleClick = () => {
-    console.log(debt);
-  }
+  const handleClick = async () => {
+    try {
+      await payDebt(debt);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
-      <Layout page={'debts'}/>
+      <Layout page={"debts"} />
       <MainContainer style={{ marginTop: "5rem" }} maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
           <Text>Debts</Text>
         </div>
         <MainContainer maxWidth={"30rem"} color={"#e8ecfb"}>
           <div style={{ marginLeft: "0rem", padding: "1rem 1rem 1rem 1rem" }}>
-            <Input type="number" id="debt" name="debt" defaultValue={debt} onChange={handleChange} value={debt}></Input>
+            <Input
+              type="number"
+              id="debt"
+              name="debt"
+              defaultValue={debt}
+              onChange={handleChange}
+              value={debt}
+            ></Input>
           </div>
         </MainContainer>
         <TextContainer

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import Layout from "../components/layouts/Layout";
+import { approve } from "../services/interface";
 
 // Styles
 const MainContainer = styled.div`
@@ -57,25 +58,37 @@ const TextContainer = styled(MainContainer)`
 
 const Approve = () => {
   // States
-  const [approve, setApprove] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   const handleChange = (event) => {
-    setDebt(event.target.value);
+    setAmount(event.target.value);
   };
 
-  const handleClick = () => {
-    console.log(approve);
+  const handleClick = async () => {
+    try {
+      await approve(amount);
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
-      <Layout page={'approve'}/>
+      <Layout page={"approve"} />
       <MainContainer style={{ marginTop: "5rem" }} maxWidth={"30rem"}>
         <div style={{ marginLeft: "2rem" }}>
           <Text>Approve</Text>
         </div>
         <MainContainer maxWidth={"30rem"} color={"#e8ecfb"}>
           <div style={{ marginLeft: "0rem", padding: "1rem 1rem 1rem 1rem" }}>
-            <Input type="number" id="approve" name="approve" defaultValue={approve} onChange={handleChange} value={approve}></Input>
+            <Input
+              type="number"
+              id="approve"
+              name="approve"
+              defaultValue={amount}
+              onChange={handleChange}
+              value={amount}
+            ></Input>
           </div>
         </MainContainer>
         <TextContainer

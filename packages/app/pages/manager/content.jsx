@@ -6,6 +6,12 @@ import styled from "@emotion/styled";
 import Layout from "../../components/layouts/Layout";
 import Cookies from "cookies";
 import LitJsSdk from "lit-js-sdk";
+import {
+  addUser,
+  addFare,
+  blockUser,
+  unBlockUser,
+} from "../../services/interface";
 
 // Styles
 const MainContainer = styled.div`
@@ -66,7 +72,6 @@ const TextContainer = styled(MainContainer)`
 
 const TextContainerTitle = styled(MainContainer)`
   text-align: center;
-  
 `;
 
 const Container = ({ name, buttonName, callback }) => {
@@ -112,17 +117,33 @@ const Container = ({ name, buttonName, callback }) => {
 };
 
 const Manager = (props) => {
-  const handleAddUser = (address) => {
-    console.log(address);
+  const handleAddUser = async (address) => {
+    try {
+      await addUser(address);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const handleBlockUser = (address) => {
-    console.log(address);
+  const handleBlockUser = async (address) => {
+    try {
+      await blockUser(address);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const handleUnblockUser = (address) => {
-    console.log(address);
+  const handleUnblockUser = async (address) => {
+    try {
+      await unBlockUser(address);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const handleChangeFare = (address) => {
-    console.log(address);
+  const handleChangeFare = async (address) => {
+    try {
+      await addFare(address);
+    } catch (error) {
+      console.log(error);
+    }
   };
   if (!props.authorized) {
     return (
