@@ -8,6 +8,7 @@ Involved alumni:
 - [Borrell Pol, Ricard](https://www.linkedin.com/in/ricard-borrell-8b303165/).
 - [Chetrit Valdepeñas, Josep Jacob](https://www.linkedin.com/in/josep-chetrit-1751621ab/).
 - [Romo Asenjo, Eduard Isaias](https://www.linkedin.com/in/eduard-isaias-romo-asenjo-50738513a/).
+- Orriols, Sergi.
 
 Teachers:
 - [Muñoz Tapia, Jose Luis](https://futur.upc.edu/JoseLuisMunozTapia)
